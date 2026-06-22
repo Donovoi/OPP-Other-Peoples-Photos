@@ -1,1 +1,16 @@
-{"scripts":{"verify":"npm run lint && npm test && npm run build"},"type":"module","private":true}
+{
+  "name": "opp-other-peoples-photos",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Privacy-first PWA for user-consented public media exposure audits.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "lint": "node scripts/lint.mjs",
+    "build": "node scripts/verify-pwa.mjs",
+    "verify": "npm run lint && npm test && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
