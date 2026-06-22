@@ -1,0 +1,35 @@
+{
+  "id": "/OPP-Other-Peoples-Photos/",
+  "name": "OPP — Other People's Photos",
+  "short_name": "OPP",
+  "description": "A privacy-first self-search PWA for public media exposure audits.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#09111f",
+  "theme_color": "#101827",
+  "orientation": "portrait-primary",
+  "categories": ["privacy", "utilities", "photo"],
+  "icons": [
+    {
+      "src": "src/assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Import location history",
+      "short_name": "Import",
+      "description": "Import CSV, KML, GPX, GeoJSON, or Google Timeline data.",
+      "url": "./index.html#location"
+    },
+    {
+      "name": "Delete local vault data",
+      "short_name": "Wipe",
+      "description": "Open local vault controls.",
+      "url": "./index.html#vault"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101827" />
+    <meta name="description" content="Privacy-first self-search PWA for public media exposure audits." />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; media-src 'self' blob:; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="src/assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="src/styles/app.css" />
+    <title>OPP — Other People's Photos</title>
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Local-first exposure audit</p>
+        <h1>OPP — Other People's Photos</h1>
+        <p class="hero-copy">Use your own date-scoped location data and your own on-device face profile to review public media candidates locally.</p>
+      </div>
+      <div class="status-card"><span class="status-dot" id="offlineDot"></span><strong id="installStatus">PWA ready</strong><span id="storageStatus">Local vault ready</span></div>
+    </header>
+    <main class="layout">
+      <nav class="steps" aria-label="Workflow steps">
+        <a href="#consent">1. Consent</a><a href="#face">2. Face</a><a href="#location">3. Location</a><a href="#windows">4. Windows</a><a href="#sources">5. Sources</a><a href="#review">6. Review</a><a href="#vault">7. Vault</a>
+      </nav>
+      <section id="consent" class="panel"><div class="panel-heading"><p class="eyebrow">Required boundary</p><h2>Self-search only</h2></div><div class="notice strong"><strong>OPP is only for searching for media that may contain you.</strong><p>No general people-finder workflow is included.</p></div><label class="check-row"><input id="selfConsent" type="checkbox" /><span>I confirm I am searching only for myself.</span></label><label class="check-row"><input id="locationConsent" type="checkbox" /><span>I consent to processing my imported location history for the selected date range only.</span></label><button id="saveConsent" class="primary">Save consent choices</button><p class="small" id="consentSaved"></p></section>
+      <section id="face" class="panel"><div class="panel-heading"><p class="eyebrow">On-device biometrics</p><h2>Face profile</h2></div><div class="grid two"><div><p>Create a session-only or remembered local face template. Raw camera frames are not intentionally stored.</p><fieldset><legend>Retention mode</legend><label class="radio-row"><input type="radio" name="faceMode" value="session" checked /> Session only</label><label class="radio-row"><input type="radio" name="faceMode" value="device" /> Remember on this device until I delete it</label></fieldset><div class="button-row"><button id="startCamera" class="secondary">Start camera</button><button id="captureFace" class="primary" disabled>Capture face profile</button><button id="deleteFace" class="danger">Delete remembered face</button></div><p class="small" id="faceStatus">No face profile loaded.</p></div><div class="camera-card"><video id="cameraPreview" autoplay playsinline muted></video><canvas id="faceCanvas" width="160" height="160" hidden></canvas></div></div></section>
+      <section id="location" class="panel"><div class="panel-heading"><p class="eyebrow">Date-scoped import</p><h2>Location history</h2></div><div class="grid two"><div><label>Start date/time<input id="dateStart" type="datetime-local" /></label><label>End date/time<input id="dateEnd" type="datetime-local" /></label><label>Import file<input id="locationFile" type="file" accept=".csv,.json,.geojson,.kml,.gpx,.xml,application/json,text/csv,text/xml" /></label><button id="importLocations" class="primary">Import selected range</button><p class="small">Supported: CSV, KML, GPX, GeoJSON, and Google Timeline/Takeout-style JSON.</p></div><div class="metrics" id="locationMetrics"><div><strong>0</strong><span>points imported</span></div><div><strong>0</strong><span>source files</span></div><div><strong>0</strong><span>selected days</span></div></div></div></section>
+      <section id="windows" class="panel"><div class="panel-heading"><p class="eyebrow">Minimised data</p><h2>Search windows</h2></div><div class="grid two"><div><label>Maximum stationary gap, minutes<input id="gapMinutes" type="number" min="5" max="180" value="30" /></label><label>Time buffer around windows, minutes<input id="bufferMinutes" type="number" min="0" max="240" value="30" /></label><label>Maximum radius, metres<input id="maxRadius" type="number" min="50" max="5000" value="1500" /></label><button id="generateWindows" class="primary">Generate search windows</button><button id="exportWindows" class="secondary">Export windows CSV</button></div><div><div id="windowSummary" class="notice">No windows generated yet.</div><ol id="windowList" class="cards"></ol></div></div></section>
+      <section id="sources" class="panel"><div class="panel-heading"><p class="eyebrow">Lawful public discovery</p><h2>Public source links</h2></div><div class="notice"><p>This MVP generates manual public-source review links and does not bypass access controls.</p></div><label>Optional provider API key stored locally<input id="youtubeKey" type="password" autocomplete="off" /></label><div class="button-row"><button id="saveYoutubeKey" class="secondary">Save key locally</button><button id="buildSources" class="primary">Build source cards</button></div><div id="sourceCards" class="cards"></div></section>
+      <section id="review" class="panel"><div class="panel-heading"><p class="eyebrow">On-device comparison</p><h2>Local candidate review</h2></div><div class="notice strong"><p>The comparator is a lightweight prototype. Treat results as triage only and confirm manually before saving evidence.</p></div><label>Candidate image or video<input id="candidateFile" type="file" accept="image/*,video/*" /></label><label>Public source URL<input id="candidateUrl" type="url" placeholder="https://…" /></label><div class="button-row"><button id="compareCandidate" class="primary">Compare locally</button><button id="saveEvidence" class="secondary" disabled>Save confirmed evidence</button></div><div id="candidateResult" class="result-card">No candidate checked.</div></section>
+      <section id="vault" class="panel"><div class="panel-heading"><p class="eyebrow">Control and deletion</p><h2>Local vault</h2></div><div class="grid two"><div class="button-stack"><button id="exportEvidence" class="secondary">Export evidence JSON</button><button id="deleteLocations" class="danger">Delete imported locations</button><button id="deleteWindows" class="danger">Delete search windows</button><button id="deleteEvidence" class="danger">Delete evidence</button><button id="wipeVault" class="danger strong-button">Wipe all local OPP data</button></div><div><h3>Audit log</h3><ol id="auditLog" class="audit-log"></ol></div></div></section>
+    </main>
+    <script type="module" src="src/js/app.js"></script>
+  </body>
+</html>
