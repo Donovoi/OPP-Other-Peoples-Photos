@@ -1,0 +1,1 @@
+{"scripts":{"verify":"npm run lint && npm test && npm run build"},"type":"module","private":true}
